@@ -14,6 +14,15 @@
         #qrcode {
             margin-top: 20px;
         }
+        #download {
+            display: none;
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
         #qrcode img {
             margin-left: auto;
             margin-right: auto;
@@ -30,6 +39,7 @@
     </form>
 
     <div id="qrcode"></div>
+    <a id="download" download="qrcode.png">Download QR Code</a>
 
     <script>
         document.getElementById("qrForm").addEventListener("submit", function(event) {
@@ -44,13 +54,25 @@
 
             // Clear previous QR code
             document.getElementById("qrcode").innerHTML = "";
+            document.getElementById("download").style.display = "none";
 
             // Generate new QR code
-            new QRCode(document.getElementById("qrcode"), {
+            let qr = new QRCode(document.getElementById("qrcode"), {
                 text: url,
                 width: 320,
                 height: 320
             });
+
+            // Wait for QR code to render before enabling download
+            setTimeout(() => {
+                let qrCanvas = document.querySelector("#qrcode canvas");
+                if (qrCanvas) {
+                    let qrDataUrl = qrCanvas.toDataURL("image/png");
+                    let downloadLink = document.getElementById("download");
+                    downloadLink.href = qrDataUrl;
+                    downloadLink.style.display = "inline-block";
+                }
+            }, 500); // Small delay to ensure QR code is rendered
         });
     </script>
 
